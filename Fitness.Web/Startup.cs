@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Fitness.Web.Data;
 using Fitness.Web.Models;
 using Fitness.Web.Services;
+using Fitness.Web.Infrastructure;
 
 namespace Fitness.Web
 {
@@ -60,6 +61,8 @@ namespace Fitness.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.MigrateDatabase();
 
             app.UseStaticFiles();
 

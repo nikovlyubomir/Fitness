@@ -4,7 +4,18 @@
 }
 
 <h2>Workout</h2><hr />
-
+@if (TempData.ContainsKey("SuccessMessage"))
+{
+    <div class="alert alert-success">
+        <strong>Success!</strong> @TempData["SuccessMessage"]
+    </div>
+}
+else if (TempData.ContainsKey("ErrorMessage"))
+{
+    <div class="alert alert-danger">
+        <strong>Error!</strong> @TempData["ErrorMessage"]
+    </div>
+}
 <form method="post">
     <div class="form-group">
         <label asp-for="Type">Workout type:</label>
@@ -28,6 +39,6 @@
         <label asp-for="Date">Date</label>
         <input type="date" class="form-control" asp-for="Date">
     </div>
-    <input type="submit" value="Submit" />
+    <input type="submit" class="btn btn-primary" value="Submit workout" />
 </form>
 

@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Fitness.Web.Data;
+using Fitness.Web.Data.Models;
 using Fitness.Web.Models;
 using Microsoft.AspNetCore.Authorization;
-using Fitness.Web.Data.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Fitness.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _ctx;
+        public HomeController(ApplicationDbContext context)
+        {
+            _ctx = context;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -42,10 +45,30 @@ namespace Fitness.Web.Controllers
             return View(new WorkoutModel());
         }
 
+        [Authorize]
         [HttpPost]
-        public IActionResult Workout(WorkoutModel workout)
+        public IActionResult Workout(WorkoutModel workoutModel)
         {
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Invalid data. Try again.";
+                return View(new WorkoutModel());
+            }
+
+            var workout = new Workout()
+            {
+                CaloriesBurned = workoutModel.CaloriesBurned,
+                Date = workoutModel.Date,
+                DurationMinutes = workoutModel.DurationMinutes,
+                Type = workoutModel.Type
+            };
+
+            _ctx.Workout.Add(workout);
+            _ctx.SaveChanges();
+
+            TempData["SuccessMessage"] = "Workout successfully registered.";
+
+            return View(new WorkoutModel());
         }
     }
 }

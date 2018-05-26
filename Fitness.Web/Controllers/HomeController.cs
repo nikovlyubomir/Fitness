@@ -4,6 +4,7 @@ using Fitness.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Fitness.Web.Controllers
 {
@@ -55,6 +56,7 @@ namespace Fitness.Web.Controllers
                 return View(new WorkoutModel());
             }
 
+            var user = _ctx.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
             var workout = new Workout()
             {
                 CaloriesBurned = workoutModel.CaloriesBurned,
@@ -63,12 +65,18 @@ namespace Fitness.Web.Controllers
                 Type = workoutModel.Type
             };
 
-            _ctx.Workout.Add(workout);
+            user.Workouts.Add(workout);
             _ctx.SaveChanges();
 
             TempData["SuccessMessage"] = "Workout successfully registered.";
 
             return View(new WorkoutModel());
+        }
+
+        [Authorize]
+        public IActionResult WorkoutSummary()
+        {
+            return View();
         }
     }
 }

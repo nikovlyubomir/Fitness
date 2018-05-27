@@ -1,7 +1,37 @@
-﻿
+﻿@model IEnumerable<string>
 @{
     ViewData["Title"] = "Users";
 }
 
 <h2>Users</h2><hr />
+@if (TempData.ContainsKey("SuccessMessage"))
+{
+    <div class="alert alert-success">
+        <strong>Success!</strong> @TempData["SuccessMessage"].
+    </div>
+}
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong>Hi!</strong> No users except you were found :(.
+    </div>
 
+    return;
+}
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>User email</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var userEmail in Model)
+    {
+        <tr>
+            <td>@userEmail</td>
+            <td>
+                <a asp-controller="Administrator" asp-action="DeleteUser" asp-route-userEmail="@userEmail" class="btn btn-danger">Delete user</a>
+            </td>
+        </tr>
+    }
+</table>

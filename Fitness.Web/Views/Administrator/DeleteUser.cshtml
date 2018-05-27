@@ -1,0 +1,9 @@
+﻿@{
+    ViewData["Title"] = "DeleteUser";
+}
+
+<h2>Are you sure you want to delete user "@ViewData["userEmail"]"?</h2>
+
+<a asp-controller="Administrator" asp-action="DeleteByEmail" asp-route-userEmail="@ViewData["userEmail"]" class="btn btn-success">Yes!</a>
+<a href="users" class="btn btn-danger">No! Take me back</a>
+

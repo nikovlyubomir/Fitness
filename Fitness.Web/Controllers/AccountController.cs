@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Fitness.Web.Models;
 using Fitness.Web.Models.AccountViewModels;
 using Fitness.Web.Services;
+using Fitness.Web.Infrastructure;
 
 namespace Fitness.Web.Controllers
 {
@@ -224,6 +225,8 @@ namespace Fitness.Web.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, GlobalConstants.UserRole);
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

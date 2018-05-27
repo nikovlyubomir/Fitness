@@ -3,6 +3,9 @@ using Fitness.Web.Data.Models;
 using Fitness.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -76,7 +79,24 @@ namespace Fitness.Web.Controllers
         [Authorize]
         public IActionResult WorkoutSummary()
         {
-            return View();
+            var minDate = DateTime.Now.AddDays(-30);
+            var user = _ctx.Users.Include(x => x.Workouts)
+                .FirstOrDefault(u => u.Email == User.Identity.Name);
+
+            var userWorkoutsForLastMonth = user.Workouts
+                .Where(w => w.Date > minDate)
+                .OrderByDescending(d => d.Date);
+
+            var model = userWorkoutsForLastMonth.Select(x => new WorkoutModel
+            {
+                CaloriesBurned = x.CaloriesBurned,
+                Date = x.Date,
+                DurationMinutes = x.DurationMinutes,
+                Type = x.Type
+            })
+            .ToList();
+
+            return View(model);
         }
     }
 }

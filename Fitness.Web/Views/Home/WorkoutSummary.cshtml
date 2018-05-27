@@ -1,7 +1,34 @@
-﻿
+﻿@model IEnumerable<WorkoutModel>
 @{
     ViewData["Title"] = "WorkoutSummary";
 }
 
 <h2>WorkoutSummary</h2><hr />
 
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong>Hi!</strong> You haven't worked out in the last month :(.
+    </div>
+
+    return;
+}
+<h4>Your workouts for the past 30 days:</h4><br />
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Type</th>
+        <th>Calories burned</th>
+        <th>Duration (minutes)</th>
+        <th>Date</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Type</td>
+            <td>@item.CaloriesBurned</td>
+            <td>@item.DurationMinutes</td>
+            <td>@item.Date.ToString("dd/MM/yyyy")</td>
+        </tr>
+    }
+</table>

@@ -2,6 +2,7 @@
 using Fitness.Web.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Fitness.Web.Controllers
@@ -34,7 +35,12 @@ namespace Fitness.Web.Controllers
 
         public IActionResult DeleteByEmail(string userEmail)
         {
-            var userToDelete = _ctx.Users.FirstOrDefault(u => u.Email == userEmail);
+            var userToDelete = _ctx.Users
+                .Include(x => x.Workouts)
+                .FirstOrDefault(u => u.Email == userEmail);
+
+            // delete all workouts of user before deleting him
+            _ctx.Workout.RemoveRange(userToDelete.Workouts);
             _ctx.Users.Remove(userToDelete);
             _ctx.SaveChanges();
 
